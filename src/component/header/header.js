@@ -1,14 +1,40 @@
-import React from "react";
+import React, { Component } from "react";
 
 import './header.css'
 
-const Header = () => {
-    return (
-        <header className="header">
-            <h1>todos</h1>
-            <input className="new-todo" placeholder="What needs to be done?" autoFocus/>
-        </header>
-    );
+export default class Header extends Component {
+
+    state = {
+        label: ''
+    };
+
+    onLabelChange = (evetn) => {
+        this.setState({
+            label: evetn.target.value
+        })
+    };
+
+    onSubmit = (event) => {
+        event.preventDefault();
+        this.props.onItemAdded(this.state.label);
+        this.setState({
+            label: ''
+        });
+    };
+
+    render() {
+        return (
+            <form className="header" onSubmit={this.onSubmit}>
+                <h1>todos</h1>
+                <input className="new-todo"
+                       placeholder="What needs to be done?"
+                       autoFocus
+                       type='text'
+                       onChange={this.onLabelChange}
+                       value={this.state.label}
+                />
+            </form>
+        );
+    };
 };
 
-export default Header;
