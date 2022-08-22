@@ -1,10 +1,33 @@
 import React, {Component} from "react";
 import './todo-list-item.css';
+import {formatDistanceToNow} from "date-fns";
 
 export default class TodoListItem extends Component {
 
+    state = {
+        date: new Date(),
+    };
+
+    componentDidMount() {
+        this.timerID = setInterval(
+            () => this.tick(),
+            1000
+        );
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.timerID);
+    }
+
+    tick() {
+        this.setState({
+
+        });
+    }
+
     render() {
         const {label, onDeleted, onToggleDone, done} = this.props;
+        const { date } = this.state
 
         let className = 'description';
         if (done) {
@@ -19,7 +42,10 @@ export default class TodoListItem extends Component {
                     onClick={onToggleDone}>
                         {label}
                     </span>
-                    <span className="created">created 5 minutes ago</span>
+                    <span className="created">
+                        {formatDistanceToNow(date,
+                            {includeSeconds: true})}
+                    </span>
                 </label>
                 <button className="icon icon-edit"></button>
                 <button className="icon icon-destroy"

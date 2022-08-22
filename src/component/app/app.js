@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import PropTypes from 'prop-types';
+
 
 import Header from "../header";
 import Main from "../main";
@@ -86,12 +88,28 @@ export default class App extends Component{
         }
     };
 
+    static defaultProps = {
+        addItem: () => {},
+        deleteItem: () => {},
+        onToggleDone: () => {},
+        deleteItems: () => {},
+        onFilterChange: () => {}
+    }
+
+    static propTypes = {
+        maxid: PropTypes.number,
+        filter: PropTypes.func,
+        addItem: PropTypes.func.isRequired,
+        deleteItem: PropTypes.func.isRequired
+    };
+
 
     render() {
         const { todoDate, filter } = this.state;
         const visibleItems = this.filter(todoDate, filter);
         const doneCount = todoDate.filter((el) => el.done).length;
         const todoCount = todoDate.length - doneCount;
+
         return (
             <section className='todoapp'>
                 <Header onItemAdded = {this.addItem}/>
