@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react'
 
 import './footer.css';
-import TaskFilter from "../task-filter";
+import TaskFilter from '../task-filter'
 
 const Footer = ({ todo, deleteItems, filter, onFilterChange }) => {
   return (
@@ -12,7 +12,7 @@ const Footer = ({ todo, deleteItems, filter, onFilterChange }) => {
         Clear completed
       </button>
     </footer>
-  );
+  )
 };
 
 export default Footer;
