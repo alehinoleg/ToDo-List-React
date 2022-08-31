@@ -3,10 +3,10 @@ import React from 'react'
 import TodoList from '../todo-list'
 import './main.css';
 
-const Main = ({ todos, onDeleted, onToggleDone }) => {
+const Main = ({ todos, onDeleted, onToggleDone, isEditing }) => {
   return (
     <section className="main">
-      <TodoList todos={todos} onDeleted={onDeleted} onToggleDone={onToggleDone} />
+      <TodoList todos={todos} onDeleted={onDeleted} onToggleDone={onToggleDone} isEditing={isEditing}/>
     </section>
   );
 };

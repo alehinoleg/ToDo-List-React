@@ -26,7 +26,7 @@ export default class TodoListItem extends Component {
   }
 
   render() {
-    const {label, onDeleted, onToggleDone, done} = this.props;
+    const {label, onDeleted, onToggleDone, done, isEditing} = this.props;
     const { date } = this.state
 
     let className = 'description';
@@ -36,20 +36,22 @@ export default class TodoListItem extends Component {
 
     return (
       <div className="view">
-        <input className="toggle" type="checkbox"/>
+        <input className="toggle" type="checkbox" tabIndex={-1}/>
         <label>
           <span className={className}
             onClick={onToggleDone}>
             {label}
           </span>
-          <span className="created">
+          <span className="created" tabIndex={-1}>
             {formatDistanceToNow(date,
               {includeSeconds: true})}
           </span>
         </label>
-        <button className="icon icon-edit"></button>
+        <button className="icon icon-edit" tabIndex={-1}
+          onClick={isEditing}
+        ></button>
         <button className="icon icon-destroy"
-          onClick={onDeleted}></button>
+          onClick={onDeleted} tabIndex={-1}></button>
       </div>
     );
   };

@@ -75,6 +75,24 @@ export default class App extends Component{
     });
   };
 
+  isEditing = (id) => {
+    this.setState(({todoDate}) => {
+      const newArr = [];
+      const newEdit = todoDate.map((el) => {
+        if (el.id === id) {
+          el.edit = !el.edit;
+          console.log(el);
+          newArr.push(el);
+        } else {
+          newArr.push(el);
+        }
+        return el;
+      });
+      console.log(newArr);
+      return {todoDate: newEdit};
+    })      
+  };
+
   filter(items, filter) {
     switch(filter) {
     case 'all' :
@@ -116,6 +134,7 @@ export default class App extends Component{
         <Main todos = {visibleItems}
           onDeleted = {this.deleteItem}
           onToggleDone = {this.onToggleDone}
+          isEditing = {this.isEditing}
         />
         <Footer todo = {todoCount}
           deleteItems = {this.deleteItems}

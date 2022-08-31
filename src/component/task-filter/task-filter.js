@@ -16,15 +16,16 @@ export default class TaskFilter extends Component {
       const clazz = isActive?'selected':'';
       return(
         <li key={name}>
-          <button className={clazz}
+          <button className={clazz} 
             onClick={()=>onFilterChange(name)}
+            tabIndex={0}
           >{label}</button>
         </li>
       );
     });
 
     return (
-      <ul className="filters">
+      <ul className="filters" tabIndex={0}>
         {buttons}
       </ul>
     );
