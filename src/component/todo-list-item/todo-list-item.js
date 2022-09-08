@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import './todo-list-item.css';
 import {formatDistanceToNow} from 'date-fns';
+import classNames from 'classnames';
 
 export default class TodoListItem extends Component {
 
@@ -24,21 +25,22 @@ export default class TodoListItem extends Component {
     });
   }
 
+  _handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      console.log('do validate');
+    }
+  }
+
   render() {
     const {label, onDeleted, onToggleDone, done, isEditing} = this.props;
-    const { date } = this.state
-
-    let className = 'description';
-    if (done) {
-      className += ' description-line'
-    }
+    const { date } = this.state;
 
     return (
       <div className="view">
         <input className="toggle" type="checkbox" tabIndex={-1}/>
         <label>
-          <span className={className}
-            onClick={onToggleDone}>
+          <span className={classNames('description', {'description-line': done})}
+            onClick={onToggleDone} onKeyPress={this._handleKeyPress}>
             {label}
           </span>
           <span className="created" tabIndex={-1}>
