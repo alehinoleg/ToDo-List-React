@@ -8,15 +8,16 @@ export default class Header extends Component {
     label: ''
   };
 
-  onLabelChange = (evetn) => {
-    this.setState({
-      label: evetn.target.value
-    })
+  onLabelChange = (event) => {
+    this.setState(() => ({
+      label: event.target.value
+    }))
   };
-
+ 
   onSubmit = (event) => {
     event.preventDefault();
-    this.props.onItemAdded(this.state.label);
+    const {onItemAdded} = this.props;
+    onItemAdded(this.state.label);
     this.setState({
       label: ''
     });

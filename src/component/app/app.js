@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
+import { v4 as uuidv4 } from 'uuid';
 
 import Header from '../header';
 import Main from '../main';
@@ -8,14 +8,11 @@ import Footer from '../footer';
 import './app.css'
 
 
+
 export default class App extends Component{
 
-  maxid = 0;
   state = {
-    todoDate : [
-      this.createTodoItem('Completed task'),
-      this.createTodoItem('Active task'),
-    ],
+    todoDate : [],
     filter: 'all'
   };
 
@@ -24,9 +21,17 @@ export default class App extends Component{
       label,
       edit: false,
       done: false,
-      id: this.maxid ++
+      id: uuidv4()
     };
   };
+
+  componentDidMount() {
+    localStorage.getItem('state') && this.setState(() => JSON.parse(localStorage.getItem('state')))
+  }
+
+  componentDidUpdate() {
+    localStorage.setItem('state', JSON.stringify(this.state))
+  }
 
   deleteItem = (id) => {
     this.setState(({todoDate}) => {
@@ -76,30 +81,43 @@ export default class App extends Component{
   };
 
   isEditing = (id) => {
-    this.setState(({todoDate}) => {
-      const newArr = [];
-      const newEdit = todoDate.map((el) => {
+    this.setState({
+      todoDate: [...this.state.todoDate].map((el) => {
         if (el.id === id) {
           el.edit = !el.edit;
-          console.log(el);
-          newArr.push(el);
-        } else {
-          newArr.push(el);
+          return el;
         }
         return el;
-      });
-      console.log(newArr);
-      return {todoDate: newEdit};
-    })      
+      })
+    })  
+  };
+
+  onItemEdit = (text, id) => {
+    event.preventDefault();
+    const newItem = this.createTodoItem(text)
+    this.setState({
+      todoDate: [...this.state.todoDate].map((el) => {
+        if (el.id === id ) {
+          return newItem
+        }
+        return el;
+      })
+    })
+  }
+
+  ACTIONS = {
+    ALL: 'all',
+    ACTIVE: 'active',
+    DONE: 'done',
   };
 
   filter(items, filter) {
     switch(filter) {
-    case 'all' :
+    case this.ACTIONS.ALL :
       return items;
-    case 'active' :
+    case this.ACTIONS.ACTIVE :
       return items.filter(item => !item.done);
-    case 'done' :
+    case this.ACTIONS.DONE :
       return items.filter(item => item.done);
     default:
       return items;
@@ -135,6 +153,7 @@ export default class App extends Component{
           onDeleted = {this.deleteItem}
           onToggleDone = {this.onToggleDone}
           isEditing = {this.isEditing}
+          onItemEdit = {this.onItemEdit}
         />
         <Footer todo = {todoCount}
           deleteItems = {this.deleteItems}

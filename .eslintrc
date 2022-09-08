@@ -1,7 +1,8 @@
 {
   "env": {
     "browser": true,
-    "es2021": true
+    "es2021": true,
+    "jest/globals": true
   },
   "ignorePatterns": ["node_modules", "dist", "build"],
   "extends": [
@@ -20,7 +21,7 @@
     "ecmaVersion": 12,
     "sourceType": "module"
   },
-  "plugins": ["react", "prettier", "import"],
+  "plugins": ["react", "prettier", "import", "jest"],
   "rules": {
     "indent": ["error", 2],
     "prettier/prettier": "off",

@@ -21,7 +21,6 @@ export default class TodoListItem extends Component {
 
   tick() {
     this.setState({
-
     });
   }
 
