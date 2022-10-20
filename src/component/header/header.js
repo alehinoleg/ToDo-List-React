@@ -18,38 +18,23 @@ export default class Header extends Component {
   };
 
   onChangeMin = (event) => {
-    if (event.target.value !== '') {
-      this.setState(() => ({
-        endTimer: true,
-        min: Number(event.target.value) 
-      }))
-    } 
-    if (event.target.value === '') {
-      this.setState(() => ({
-        min: 0
-      }))
-    } 
+    this.setState(() => ({
+      endTimer: true,
+      min: Number(event.target.value) 
+    }))
   }
 
   onChangeSec = (event) => {
-    if (event.target.value !== '') {
-      this.setState(() => ({
-        endTimer: true,
-        sec: Number(event.target.value) 
-      }))
-    }
-    if (event.target.value === '') {
-      this.setState(() => ({
-        sec: 0
-      }))
-    } 
+    this.setState(() => ({
+      endTimer: true,
+      sec: Number(event.target.value) 
+    }))
   }
 
   onKeyDown = (event) => {
     if (event.keyCode === 13) {
       event.preventDefault();
       const {onItemAdded} = this.props;
-      console.log(this.state.min, this.state.sec)
       onItemAdded(this.state.label, this.state.min, this.state.sec, this.state.endTimer );
       this.setState({
         label: '',
@@ -73,12 +58,13 @@ export default class Header extends Component {
         <input className='new-todo new-todo-time' 
           placeholder='Min'
           onChange={this.onChangeMin}
-          type='text'
+          type='number'
           value={this.state.min}/>
         <input className='new-todo new-todo-time' 
           placeholder='Sec'
           onChange={this.onChangeSec}
           value={this.state.sec}
+          type='number'
         />
       </form>
     );

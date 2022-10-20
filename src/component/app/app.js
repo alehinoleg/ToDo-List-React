@@ -16,7 +16,7 @@ export default class App extends Component{
     filter: 'all'
   };
 
-  createTodoItem(label, min=0, sec=0, endTimer = false) {
+  createTodoItem(label, min, sec, endTimer = false) {
     return {
       label,
       min,
@@ -30,7 +30,7 @@ export default class App extends Component{
   };
 
   componentDidMount() {
-    localStorage.getItem('state') && this.setState(() => JSON.parse(localStorage.getItem('state')))
+    this.setState(() => JSON.parse(localStorage.getItem('state')))
   }
 
   componentDidUpdate() {
@@ -46,7 +46,7 @@ export default class App extends Component{
     });
   };
 
-  addItem = (text, min = 0, sec = 0, endTimer ) => {
+  addItem = (text, min, sec, endTimer ) => {
     const newItem = this.createTodoItem(text, min , sec, endTimer)
     this.setState(({todoDate}) => {
       const newArr = [ newItem, ...todoDate ];

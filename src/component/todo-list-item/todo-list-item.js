@@ -35,6 +35,10 @@ export default class TodoListItem extends Component {
   render() {
     const {label, min, sec, onDeleted, onToggleDone, done, isEditing, onPlay, onPause } = this.props;
     const { date } = this.state;
+    let minuta = min
+    let secunda = sec
+    if (minuta === '') { minuta = 0}
+    if (secunda === '') { secunda = 0}
     return (
       <div className="view">
         <input className="toggle" type="checkbox" tabIndex={-1}/>
@@ -46,7 +50,7 @@ export default class TodoListItem extends Component {
           <span className='timer'>
             <button className='iconT icon-play' onClick={onPlay}></button>
             <button className='iconT icon-pause' onClick={onPause}></button>
-            <span className='timer-text'>{min}:{sec}</span>
+            <span className='timer-text'>{minuta}:{secunda}</span>
           </span>
           <span className="created" tabIndex={-1}>
             {formatDistanceToNow(date,
