@@ -23,8 +23,8 @@ export default class Header extends Component {
         endTimer: true,
         min: Number(event.target.value) 
       }))
-    } else
-    {
+    } 
+    if (event.target.value === '') {
       this.setState(() => ({
         min: 0
       }))
@@ -38,7 +38,7 @@ export default class Header extends Component {
         sec: Number(event.target.value) 
       }))
     }
-    if (event.target.value === null){
+    if (event.target.value === '') {
       this.setState(() => ({
         sec: 0
       }))
