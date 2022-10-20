@@ -94,7 +94,7 @@
 .todo-list li .icon {
   position: absolute;
   top: 0;
-  bottom: -3px;
+  bottom: -1px;
   width: 30px;
   height: 40px;
   font-size: 34px;
@@ -136,4 +136,35 @@
 .todo-list li label .description-line {
   color: #cdcdcd;
   text-decoration: line-through;
+}
+
+.timer {
+  width: 90px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.iconT {
+  color: #cc9a9a;
+  margin: auto 0 11px;
+  transition: color 0.2s ease-out;
+  cursor: pointer;
+}
+
+.icon-play:after {
+  content: '▶';
+}
+
+.icon-pause:after {
+  content: '⏸';
+}
+
+.todo-list .timer .iconT {
+  font-size: 17px;
+  margin: 0;
+}
+
+.timer-text {
+  font-size: 17px;
 }

@@ -31,17 +31,22 @@ export default class TodoListItem extends Component {
     }
   }
 
-  render() {
-    const {label, onDeleted, onToggleDone, done, isEditing} = this.props;
-    const { date } = this.state;
 
+  render() {
+    const {label, min, sec, onDeleted, onToggleDone, done, isEditing, onPlay, onPause } = this.props;
+    const { date } = this.state;
     return (
       <div className="view">
         <input className="toggle" type="checkbox" tabIndex={-1}/>
         <label>
           <span className={classNames('description', {'description-line': done})}
-            onClick={onToggleDone} onKeyPress={this._handleKeyPress}>
+            onClick={onToggleDone} onSubmit = {onToggleDone}>
             {label}
+          </span>
+          <span className='timer'>
+            <button className='iconT icon-play' onClick={onPlay}></button>
+            <button className='iconT icon-pause' onClick={onPause}></button>
+            <span className='timer-text'>{min}:{sec}</span>
           </span>
           <span className="created" tabIndex={-1}>
             {formatDistanceToNow(date,

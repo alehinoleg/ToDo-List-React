@@ -16,12 +16,16 @@ export default class App extends Component{
     filter: 'all'
   };
 
-  createTodoItem(label) {
+  createTodoItem(label, min=0, sec=0, endTimer = false) {
     return {
       label,
+      min,
+      sec,
+      endTimer,
       edit: false,
       done: false,
-      id: uuidv4()
+      id: uuidv4(),
+      onPlay: false,
     };
   };
 
@@ -42,8 +46,8 @@ export default class App extends Component{
     });
   };
 
-  addItem = (text) => {
-    const newItem = this.createTodoItem(text)
+  addItem = (text, min = 0, sec = 0, endTimer ) => {
+    const newItem = this.createTodoItem(text, min , sec, endTimer)
     this.setState(({todoDate}) => {
       const newArr = [ newItem, ...todoDate ];
       return {
@@ -105,6 +109,81 @@ export default class App extends Component{
     })
   }
 
+  /*onPlay = (id) => {
+    this.setState(({todoDate}) => {
+      const newArr = todoDate.map((task) => {
+        if (task.id === id) {
+          if(!task.timerOn) {
+            task.timerID = setInterval(() => this.startTimer(task.min, task.sec, task.id, task.endTimer), 1000);
+          }
+        }
+        return task;
+      });
+      return {
+        todoDate: newArr
+      };
+    });
+  };
+
+  onPause = (id) => {
+    console.log('нажал паузу')
+    this.setState(({todoDate}) => {
+      const newArr = todoDate.map((task) => {
+        if (task.id === id) {
+          clearInterval(task.timerID);
+          task.timerOn = false;
+        }
+        return task;
+      });
+      return {
+        todoDate: newArr
+      }
+    })
+  }*/
+
+  onPlay = (id) => {
+    this.couter = setInterval(() => {
+      this.setState({
+        todoDate: [...this.state.todoDate].map((el) => {
+          console.log(el.onPlay);
+          if (el.id === id) {
+            if (el.endTimer) {
+              if (el.sec >= 0) {
+                el.sec--;
+              }
+
+              if (el.sec < 0) {
+                el.min--;
+                el.sec = 59;
+              }
+
+              if (el.min === 0 && el.sec === 0) {
+                this.onPause();
+                alert('Время вышло!');
+              }
+            } else {
+              if (el.sec < 59) {
+                el.sec++
+              }
+              if (el.sec === 59) {
+                el.sec = 0
+                el.min++
+              }
+            }  
+          }
+          return el;
+        })
+      });
+    }, 1000)
+  };
+  
+
+  onPause = () => {
+    clearInterval(this.couter);
+  }
+
+  
+
   ACTIONS = {
     ALL: 'all',
     ACTIVE: 'active',
@@ -130,7 +209,7 @@ export default class App extends Component{
     onToggleDone: () => {},
     deleteItems: () => {},
     onFilterChange: () => {}
-  }
+  };
 
   static propTypes = {
     maxid: PropTypes.number,
@@ -154,6 +233,8 @@ export default class App extends Component{
           onToggleDone = {this.onToggleDone}
           isEditing = {this.isEditing}
           onItemEdit = {this.onItemEdit}
+          onPlay = {this.onPlay}
+          onPause = {this.onPause}
         />
         <Footer todo = {todoCount}
           deleteItems = {this.deleteItems}

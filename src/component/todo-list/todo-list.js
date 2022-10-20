@@ -21,7 +21,7 @@ export default class TodoList extends Component {
 
   render() {
 
-    const { todos, onDeleted, onToggleDone, isEditing } = this.props;
+    const { todos, onDeleted, onToggleDone, isEditing, onPlay, onPause } = this.props;
 
     if (todos.length === 0) {
       return (
@@ -56,10 +56,14 @@ export default class TodoList extends Component {
         <li key={item.id} tabIndex={0}>
           <TodoListItem
             label={item.label}
+            min={item.min}
+            sec={item.sec}
             done={item.done}
             onDeleted={() => onDeleted(item.id)}
             onToggleDone={() => onToggleDone(item.id)}
             isEditing = {() => isEditing(item.id)}
+            onPlay={() => onPlay(item.id)}
+            onPause={() => onPause(item.id)}
           />
         </li>
       );
