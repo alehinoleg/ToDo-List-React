@@ -9,6 +9,8 @@ export default class TodoList extends Component {
     value: ''
   }
 
+  
+
   onEditingTodo = (event) => {
     this.setState(() => ({
       value: event.target.value
@@ -18,6 +20,10 @@ export default class TodoList extends Component {
   onSubmit = (id) => {
     this.props.onItemEdit(this.state.value, id)
   };
+
+  blur = () => {
+
+  }
 
   render() {
 
@@ -36,16 +42,20 @@ export default class TodoList extends Component {
             <li className="editing">
               <form onSubmit={() => this.onSubmit(item.id)}>
                 <input type="text" className="edit" placeholder="Editing task" 
-                  onChange={this.onEditingTodo}/>
+                  onChange={this.onEditingTodo} autoFocus />
               </form>
             </li>
             <li>
               <TodoListItem
                 label={item.label}
+                min={item.min }
+                sec={item.sec }
                 done={item.done}
                 onDeleted={() => onDeleted(item.id)}
                 onToggleDone={() => onToggleDone(item.id)}
                 isEditing = {() => isEditing(item.id)}
+                onPlay={() => onPlay(item.id)}
+                onPause={() => onPause(item.id)}
               />
             </li>
           </div>

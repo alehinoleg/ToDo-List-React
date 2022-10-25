@@ -35,7 +35,11 @@ export default class Header extends Component {
     if (event.keyCode === 13) {
       event.preventDefault();
       const {onItemAdded} = this.props;
-      onItemAdded(this.state.label, this.state.min, this.state.sec, this.state.endTimer );
+      if (this.state.label !== '') {
+        onItemAdded(this.state.label, this.state.min, this.state.sec, this.state.endTimer );
+      } else {
+        alert('Введите задачу');
+      }
       this.setState({
         label: '',
         min: '',

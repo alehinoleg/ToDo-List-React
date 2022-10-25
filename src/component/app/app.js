@@ -13,7 +13,7 @@ export default class App extends Component{
 
   state = {
     todoDate : [],
-    filter: 'all'
+    filter: 'all',
   };
 
   createTodoItem(label, min, sec, endTimer = false) {
@@ -98,15 +98,22 @@ export default class App extends Component{
 
   onItemEdit = (text, id) => {
     event.preventDefault();
-    const newItem = this.createTodoItem(text)
-    this.setState({
-      todoDate: [...this.state.todoDate].map((el) => {
-        if (el.id === id ) {
-          return newItem
-        }
-        return el;
+    //const newItem = this.createTodoItem(text)
+    if (text !== '') {
+      this.setState({
+        todoDate: this.state.todoDate.map((el) => {
+          if (el.id === id ) {
+            el.label = text
+            el.edit = false
+            return {...el}
+          }
+          return el;
+        })
       })
-    })
+    } else {
+      alert('введите текст редактирования')
+    }
+    
   }
 
   /*onPlay = (id) => {
@@ -145,7 +152,6 @@ export default class App extends Component{
     this.couter = setInterval(() => {
       this.setState({
         todoDate: [...this.state.todoDate].map((el) => {
-          console.log(el.onPlay);
           if (el.id === id) {
             if (el.endTimer) {
               if (el.sec >= 0) {
