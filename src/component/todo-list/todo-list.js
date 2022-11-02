@@ -1,83 +1,72 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react'
 
 import './todo-list.css';
 import TodoListItem from '../todo-list-item'
 
-export default class TodoList extends Component {
+const TodoList = (props) => {
 
-  state = {
-    value: ''
-  }
-
+  const [value, useValue] = useState(props.todos.label);
   
-
-  onEditingTodo = (event) => {
-    this.setState(() => ({
-      value: event.target.value
-    }));
+  const onEditingTodo = (event) => {
+    useValue(event.target.value)
   };
 
-  onSubmit = (id) => {
-    this.props.onItemEdit(this.state.value, id)
+  const onSubmit = (id) => {
+    props.onItemEdit(value, id)
   };
 
-  blur = () => {
 
-  }
-
-  render() {
-
-    const { todos, onDeleted, onToggleDone, isEditing, onPlay, onPause } = this.props;
-
-    if (todos.length === 0) {
+  if (props.todos.length === 0) {
+    return (
+      <span className='description-span'>No tasks</span>
+    );
+  };
+  
+  const element = props.todos.map((item) => {
+    if (item.edit) {
       return (
-        <span className='description-span'>No tasks</span>
+        <div key={item.id}>
+          <li className="editing">
+            <form onSubmit={() => onSubmit(item.id)}>
+              <input type="text" className="edit" placeholder="Editing task" 
+                onChange={onEditingTodo} autoFocus />
+            </form>
+          </li>
+          <li>
+            <TodoListItem
+              label={item.label}
+              min={item.min }
+              sec={item.sec }
+              done={item.done}
+              onDeleted={() => props.onDeleted(item.id)}
+              onToggleDone={() => props.onToggleDone(item.id)}
+              isEditing = {() => props.isEditing(item.id)}
+              onPlay={() => props.onPlay(item.id)}
+              onPause={() => props.onPause(item.id)}
+            />
+          </li>
+        </div>
       );
     };
   
-    const element = todos.map((item) => {
-      if (item.edit) {
-        return (
-          <div key={item.id}>
-            <li className="editing">
-              <form onSubmit={() => this.onSubmit(item.id)}>
-                <input type="text" className="edit" placeholder="Editing task" 
-                  onChange={this.onEditingTodo} autoFocus />
-              </form>
-            </li>
-            <li>
-              <TodoListItem
-                label={item.label}
-                min={item.min }
-                sec={item.sec }
-                done={item.done}
-                onDeleted={() => onDeleted(item.id)}
-                onToggleDone={() => onToggleDone(item.id)}
-                isEditing = {() => isEditing(item.id)}
-                onPlay={() => onPlay(item.id)}
-                onPause={() => onPause(item.id)}
-              />
-            </li>
-          </div>
-        );
-      };
+    return (
+      <li key={item.id} tabIndex={0}>
+        <TodoListItem
+          label={item.label}
+          min={item.min}
+          sec={item.sec}
+          done={item.done}
+          onDeleted={() => props.onDeleted(item.id)}
+          onToggleDone={() => props.onToggleDone(item.id)}
+          isEditing = {() => props.isEditing(item.id)}
+          onPlay={() => props.onPlay(item.id)}
+          onPause={() => props.onPause(item.id)}
+        />
+      </li>
+    );
+  })
+  return <ul className="todo-list">{element}</ul>;
   
-      return (
-        <li key={item.id} tabIndex={0}>
-          <TodoListItem
-            label={item.label}
-            min={item.min}
-            sec={item.sec}
-            done={item.done}
-            onDeleted={() => onDeleted(item.id)}
-            onToggleDone={() => onToggleDone(item.id)}
-            isEditing = {() => isEditing(item.id)}
-            onPlay={() => onPlay(item.id)}
-            onPause={() => onPause(item.id)}
-          />
-        </li>
-      );
-    })
-    return <ul className="todo-list">{element}</ul>;
-  }
 };
+
+export default TodoList;

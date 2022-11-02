@@ -1,77 +1,73 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 
 import './header.css'
 
-export default class Header extends Component {
+const Header = (props) => {
 
-  state = {
+  const [task, setTask] = useState({
     label: '',
     min: '',
     sec: '',
-    endTimer: false,
+    endTimer: false
+  });
+
+  const onLabelChange = (event) => {
+    setTask((task) => {
+      return {...task, label: event.target.value}
+    });
   };
 
-  onLabelChange = (event) => {
-    this.setState(() => ({
-      label: event.target.value
-    }))
-  };
-
-  onChangeMin = (event) => {
-    this.setState(() => ({
-      endTimer: true,
-      min: Number(event.target.value) 
-    }))
+  const onChangeMin = (event) => {
+    setTask((task) => {
+      return {...task, min: event.target.value, endTimer: true}
+    });
   }
 
-  onChangeSec = (event) => {
-    this.setState(() => ({
-      endTimer: true,
-      sec: Number(event.target.value) 
-    }))
+  const onChangeSec = (event) => {
+    setTask((task) => {
+      return {...task, sec: event.target.value, endTimer: true}
+    });
   }
-
-  onKeyDown = (event) => {
+  
+  const onKeyDown = (event) => {
     if (event.keyCode === 13) {
       event.preventDefault();
-      const {onItemAdded} = this.props;
-      if (this.state.label !== '') {
-        onItemAdded(this.state.label, this.state.min, this.state.sec, this.state.endTimer );
+      const {onItemAdded} = props;
+      if (task.label !== '') {
+        onItemAdded(task.label, task.min, task.sec, task.endTimer );
       } else {
         alert('Введите задачу');
       }
-      this.setState({
-        label: '',
-        min: '',
-        sec: ''
+      setTask((task) => {
+        return {...task, min: '', sec: '', label: ''}
       });
     }
   }
 
-  render() {
-    return (
-      <form className="header" onKeyDown={this.onKeyDown}>
-        <h1>todos</h1>
-        <input className="new-todo"
-          placeholder="What needs to be done?"
-          autoFocus
-          type='text'
-          onChange={this.onLabelChange}
-          value={this.state.label}
-        />
-        <input className='new-todo new-todo-time' 
-          placeholder='Min'
-          onChange={this.onChangeMin}
-          type='number'
-          value={this.state.min}/>
-        <input className='new-todo new-todo-time' 
-          placeholder='Sec'
-          onChange={this.onChangeSec}
-          value={this.state.sec}
-          type='number'
-        />
-      </form>
-    );
-  };
+  return (
+    <form className="header" onKeyDown={onKeyDown}>
+      <h1>todos</h1>
+      <input className="new-todo"
+        placeholder="What needs to be done?"
+        autoFocus
+        type='text'
+        onChange={onLabelChange}
+        value={task.label}
+      />
+      <input className='new-todo new-todo-time' 
+        placeholder='Min'
+        onChange={onChangeMin}
+        type='number'
+        value={task.min}/>
+      <input className='new-todo new-todo-time' 
+        placeholder='Sec'
+        onChange={onChangeSec}
+        value={task.sec}
+        type='number'
+      />
+    </form>
+  );
 };
+
+export default Header;
 

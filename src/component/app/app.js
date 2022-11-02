@@ -1,22 +1,22 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import Header from '../header';
 import Main from '../main';
 import Footer from '../footer';
+
 import './app.css'
 
 
+let couter
+const App = () => {
 
-export default class App extends Component{
-
-  state = {
+  const [data, setData] = useState({
     todoDate : [],
     filter: 'all',
-  };
+  });
 
-  createTodoItem(label, min, sec, endTimer = false) {
+  const createTodoItem = (label, min, sec, endTimer = false)  => {
     return {
       label,
       min,
@@ -26,132 +26,98 @@ export default class App extends Component{
       done: false,
       id: uuidv4(),
       onPlay: false,
+      timerID: '',
     };
   };
 
-  componentDidMount() {
-    this.setState(() => JSON.parse(localStorage.getItem('state')))
-  }
+  useEffect(() => {
+    if (localStorage.getItem('state')) {
+      setData(JSON.parse(localStorage.getItem('state')))
+    }
+  }, [])
 
-  componentDidUpdate() {
-    localStorage.setItem('state', JSON.stringify(this.state))
-  }
+  useEffect(() => {
+    if (data.todoDate.length !== 0 ) {
+      localStorage.setItem('state', JSON.stringify(data))
+    }
+  }, [data])
 
-  deleteItem = (id) => {
-    this.setState(({todoDate}) => {
-      const idx = todoDate.findIndex((el) => el.id === id);
-      const newArr = [...todoDate.slice(0, idx), ...todoDate.slice(idx + 1)];
-
-      return {todoDate: newArr};
+  const deleteItem = (id) => {
+    setData((data) => {
+      const idx = data.todoDate.findIndex((el) => el.id === id);
+      const newArr = [...data.todoDate.slice(0, idx), ...data.todoDate.slice(idx + 1)];
+      return {...data, todoDate: newArr}
     });
   };
 
-  addItem = (text, min, sec, endTimer ) => {
-    const newItem = this.createTodoItem(text, min , sec, endTimer)
-    this.setState(({todoDate}) => {
-      const newArr = [ newItem, ...todoDate ];
-      return {
-        todoDate: newArr
-      };
+  const addItem = (text, min, sec, endTimer ) => {
+    const newItem = createTodoItem(text, min , sec, endTimer);
+    setData((data) => {
+      const newArr = [ newItem, ...data.todoDate ];
+      return {...data, todoDate: newArr}
     });
   };
 
-  toggleProperty(arr, id, propName) {
+  const toggleProperty = (arr, id, propName) => {
     const idx = arr.findIndex((el) => el.id === id);
     const oldItem = arr[idx];
     const newItem = {...oldItem, [propName]: !oldItem[propName]};
     return [...arr.slice(0, idx), newItem, ...arr.slice(idx + 1)];
   }
 
-  onToggleDone = (id) => {
-    this.setState(({todoDate}) => {
-      return {
-        todoDate: this.toggleProperty(todoDate, id, 'done')
-      };
+  const onToggleDone = (id) => {
+    setData((data) => {
+      return {...data, todoDate: toggleProperty(data.todoDate, id, 'done')}
     });
   };
 
-  onFilterChange = (filter) => {
-    this.setState({filter})
+  const onFilterChange = (filter) => {
+    setData((data) => {
+      return {...data, filter}
+    });
   }
 
-  deleteItems = () => {
-    this.setState(({todoDate}) => {
-      const doneCount = todoDate.filter((el) => !el.done);
-      return {
-        todoDate: doneCount
-      }
+  const deleteItems = () => {
+    setData((data) => {
+      const doneCount = data.todoDate.filter((el) => !el.done);
+      return {...data, todoDate: doneCount}
     });
   };
 
-  isEditing = (id) => {
-    this.setState({
-      todoDate: [...this.state.todoDate].map((el) => {
+  const isEditing = (id) => {
+    setData((data) => {
+      return {...data, todoDate: data.todoDate.map((el) => {
         if (el.id === id) {
           el.edit = !el.edit;
           return el;
         }
         return el;
-      })
-    })  
+      })}
+    });
   };
 
-  onItemEdit = (text, id) => {
+  const onItemEdit = (text, id) => {
     event.preventDefault();
-    //const newItem = this.createTodoItem(text)
     if (text !== '') {
-      this.setState({
-        todoDate: this.state.todoDate.map((el) => {
+      setData((data) => {
+        return {...data, todoDate: data.todoDate.map((el) => {
           if (el.id === id ) {
             el.label = text
             el.edit = false
             return {...el}
           }
           return el;
-        })
-      })
+        })}
+      }) 
     } else {
       alert('введите текст редактирования')
     }
-    
   }
-
-  /*onPlay = (id) => {
-    this.setState(({todoDate}) => {
-      const newArr = todoDate.map((task) => {
-        if (task.id === id) {
-          if(!task.timerOn) {
-            task.timerID = setInterval(() => this.startTimer(task.min, task.sec, task.id, task.endTimer), 1000);
-          }
-        }
-        return task;
-      });
-      return {
-        todoDate: newArr
-      };
-    });
-  };
-
-  onPause = (id) => {
-    console.log('нажал паузу')
-    this.setState(({todoDate}) => {
-      const newArr = todoDate.map((task) => {
-        if (task.id === id) {
-          clearInterval(task.timerID);
-          task.timerOn = false;
-        }
-        return task;
-      });
-      return {
-        todoDate: newArr
-      }
-    })
-  }*/
-
-  onPlay = (id) => {
-    this.couter = setInterval(() => {
-      this.setState({
-        todoDate: [...this.state.todoDate].map((el) => {
+  
+  const onPlayButton = (id) => {
+    couter = setInterval(() => {
+      setData((data) => {
+        return {...data, todoDate: data.todoDate.map((el) => {
           if (el.id === id) {
             if (el.endTimer) {
               if (el.sec >= 0) {
@@ -164,7 +130,7 @@ export default class App extends Component{
               }
 
               if (el.min === 0 && el.sec === 0) {
-                this.onPause();
+                onPauseButton();
                 alert('Время вышло!');
               }
             } else {
@@ -178,38 +144,36 @@ export default class App extends Component{
             }  
           }
           return el;
-        })
-      });
+        })}
+      })
     }, 1000)
-  };
-  
-
-  onPause = () => {
-    clearInterval(this.couter);
   }
 
-  
+  const onPauseButton = (id) => {
+    clearInterval(couter);
+    console.log('нажал', id);
+  }
 
-  ACTIONS = {
+  const ACTIONS = {
     ALL: 'all',
     ACTIVE: 'active',
     DONE: 'done',
   };
 
-  filter(items, filter) {
+  const filter = (items, filter) => {
     switch(filter) {
-    case this.ACTIONS.ALL :
+    case ACTIONS.ALL :
       return items;
-    case this.ACTIONS.ACTIVE :
+    case ACTIONS.ACTIVE :
       return items.filter(item => !item.done);
-    case this.ACTIONS.DONE :
+    case ACTIONS.DONE :
       return items.filter(item => item.done);
     default:
       return items;
     }
   };
 
-  static defaultProps = {
+  /*static defaultProps = {
     addItem: () => {},
     deleteItem: () => {},
     onToggleDone: () => {},
@@ -222,33 +186,32 @@ export default class App extends Component{
     filter: PropTypes.func,
     addItem: PropTypes.func.isRequired,
     deleteItem: PropTypes.func.isRequired,
-  };
+  };*/
 
   
-  render() {
-    const { todoDate, filter } = this.state;
-    const visibleItems = this.filter(todoDate, filter);
-    const doneCount = todoDate.filter((el) => el.done).length;
-    const todoCount = todoDate.length - doneCount;
+  const visibleItems = filter(data.todoDate, data.filter);
+  const doneCount = data.todoDate.filter((el) => el.done).length;
+  const todoCount = data.todoDate.length - doneCount;
+  return (
+    <section className='todoapp'>
+      <Header onItemAdded = {addItem}/>
+      <Main todos = {visibleItems}
+        onDeleted = {deleteItem}
+        onToggleDone = {onToggleDone}
+        isEditing = {isEditing}
+        onItemEdit = {onItemEdit}
+        onPlay = {onPlayButton}
+        onPause = {onPauseButton}
+      />
+      <Footer todo = {todoCount}
+        deleteItems = {deleteItems}
+        filter = {filter}
+        onFilterChange = {onFilterChange}
+      />
+    </section>
+  );
 
-    return (
-      <section className='todoapp'>
-        <Header onItemAdded = {this.addItem}/>
-        <Main todos = {visibleItems}
-          onDeleted = {this.deleteItem}
-          onToggleDone = {this.onToggleDone}
-          isEditing = {this.isEditing}
-          onItemEdit = {this.onItemEdit}
-          onPlay = {this.onPlay}
-          onPause = {this.onPause}
-        />
-        <Footer todo = {todoCount}
-          deleteItems = {this.deleteItems}
-          filter = {filter}
-          onFilterChange = {this.onFilterChange}
-        />
-      </section>
-    );
-  };
 };
+
+export default App;
 
