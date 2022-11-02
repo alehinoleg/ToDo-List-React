@@ -26,7 +26,6 @@ const App = () => {
       done: false,
       id: uuidv4(),
       onPlay: false,
-      timerID: '',
     };
   };
 
@@ -149,9 +148,8 @@ const App = () => {
     }, 1000)
   }
 
-  const onPauseButton = (id) => {
+  const onPauseButton = () => {
     clearInterval(couter);
-    console.log('нажал', id);
   }
 
   const ACTIONS = {
